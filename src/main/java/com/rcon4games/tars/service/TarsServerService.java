@@ -6,14 +6,11 @@ import com.rcon4games.tars.event.ConnectionListener;
 import com.rcon4games.tars.event.ServerConnectionListener;
 import com.rcon4games.tars.network.*;
 import com.rcon4games.tars.utils.TextParser;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 @Service
 public class TarsServerService implements ServerConnectionListener {
@@ -39,7 +36,7 @@ public class TarsServerService implements ServerConnectionListener {
         if (command.startsWith(Commands.GETGAMELOG)) {
             Packet responsePacket = new Packet();
             if(command.startsWith(Commands.GETGAMELOG_DATE)){
-                Date date = TextParser.parseDate(command.replace(Commands.GETGAMELOG_DATE+" ",""));
+                Date date = TextParser.parseLogDate(command.replace(Commands.GETGAMELOG_DATE+" ",""));
                 //TODO call dao
             }else{
                 responsePacket.setId(requestPacket.getId());

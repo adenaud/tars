@@ -48,7 +48,7 @@ public class TarsService implements ServerResponseDispatcher {
         String[] logLines = log.trim().split("\\n");
         for (String line : logLines) {
             logDAO.writeLog(line);
-            long dateDiff = Math.abs(new Date().getTime() / 1000 - (TextParser.parseDate(line).getTime() / 1000));
+            long dateDiff = Math.abs(new Date().getTime() / 1000 - (TextParser.parseLogDate(line).getTime() / 1000));
             if (dateDiff < 600 && (log.contains(" joined this ARK!") || log.contains(" left this ARK!"))) {
                 srpService.listPlayers();
             }

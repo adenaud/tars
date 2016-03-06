@@ -1,0 +1,32 @@
+body {
+  font-family: sans-serif;
+}
+
+.send-message{
+  width: 500px;
+}
+
+.log{
+  margin-top: 16px;
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 25px;
+  background: #e8eaf6;
+  height: 500px;
+  overflow: scroll;
+  p{
+    margin: 0;
+  }
+  .joinleft {
+    color: #0000CD;
+  }
+  .kill {
+    color: #DC143C;
+  }
+  .tame {
+    color: #008000;
+  }
+  .server {
+    color: #e29129;
+  }
+}

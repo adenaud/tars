@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class TextParser {
 
-    public static Date parseDate(String logLine) {
+    public static Date parseLogDate(String logLine) {
         Pattern pattern = Pattern.compile("([0-9]{4})\\.([0-9]{2})\\.([0-9]{2})_([0-9]{2}).([0-9]{2}).([0-9]{2})(.*)");
         Matcher matcher = pattern.matcher(logLine);
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -21,6 +21,16 @@ public class TextParser {
             calendar.set(Calendar.SECOND, Integer.valueOf(matcher.group(6)));
         }
         return calendar.getTime();
+    }
+
+    public static String pareLogContent(String logLine) {
+        String result = "";
+        Pattern pattern = Pattern.compile("([0-9]{4})\\.([0-9]{2})\\.([0-9]{2})_([0-9]{2}).([0-9]{2}).([0-9]{2}): (.*)");
+        Matcher matcher = pattern.matcher(logLine);
+        if (matcher.find()) {
+            result = matcher.group(7);
+        }
+        return result;
     }
 
     public static List<Player> parsePlayers(String buffer) {
