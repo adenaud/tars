@@ -1,5 +1,6 @@
 package com.rcon4games.tars.network;
 
+import com.rcon4games.tars.Commands;
 import com.rcon4games.tars.event.ConnectionListener;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.slf4j.Logger;
@@ -138,13 +139,13 @@ public class SRPConnection implements TarsSocket {
                         final Packet lastPacket = outgoingPackets.get(outgoingPackets.lastKey());
 
                         Thread thread = new Thread(() -> {
-                            if (lastPacket.getBody().equals("getgamelog")) {
+                            if (lastPacket.getBody().equals(Commands.GETGAMELOG)) {
                                 Packet packet = new Packet(lastPacket.getId(), PacketType.SERVERDATA_RESPONSE_VALUE.getValue(), new String(packetBuffer));
                                 for (ConnectionListener connectionListener : connectionListeners) {
                                     connectionListener.onReceive(SRPConnection.this, packet);
                                 }
-                            } else if (lastPacket.getBody().equals("ListPlayers")) {
-                                Packet packet = new Packet(getSequenceNumber(), PacketType.SERVERDATA_EXECCOMMAND.getValue(), "ListPlayers");
+                            } else if (lastPacket.getBody().equals(Commands.LISTPLAYERS)) {
+                                Packet packet = new Packet(getSequenceNumber(), PacketType.SERVERDATA_EXECCOMMAND.getValue(), Commands.LISTPLAYERS);
                                 send(packet);
                             }
                         }, "ResponseExecThread");

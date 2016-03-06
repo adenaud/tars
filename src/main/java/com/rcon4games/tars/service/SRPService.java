@@ -1,21 +1,18 @@
 package com.rcon4games.tars.service;
 
+import com.rcon4games.tars.Commands;
 import com.rcon4games.tars.event.ConnectionListener;
 import com.rcon4games.tars.event.ServerResponseDispatcher;
-import com.rcon4games.tars.model.Player;
 import com.rcon4games.tars.network.*;
+import com.rcon4games.tars.utils.TextParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class SRPService implements ConnectionListener {
@@ -44,11 +41,12 @@ public class SRPService implements ConnectionListener {
     }
 
     public void onLogin() {
+        listPlayers();
         Timer logTimer = new Timer();
         logTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Packet packet = new Packet(connection.getSequenceNumber(), PacketType.SERVERDATA_EXECCOMMAND.getValue(), "getgamelog");
+                Packet packet = new Packet(connection.getSequenceNumber(), PacketType.SERVERDATA_EXECCOMMAND.getValue(), Commands.GETGAMELOG);
                 connection.send(packet);
             }
         }, 2000, 2000);
@@ -70,14 +68,14 @@ public class SRPService implements ConnectionListener {
             logger.info("Authentication OK");
             onLogin();
         } else if (packet.getType() == PacketType.SERVERDATA_RESPONSE_VALUE.getValue()) {
-            logger.info(packet.getBody().trim());
+            //logger.info(packet.getBody().trim());
 
             Packet requestPacket = ((SRPConnection)connection).getRequestPacket(packet.getId());
 
             if (serverResponseDispatcher != null && requestPacket != null) {
-                if (requestPacket.getBody().equals("ListPlayers")) {
-                    serverResponseDispatcher.onListPlayers(getPlayers(packet.getBody()));
-                } else if (requestPacket.getBody().equals("getgamelog")) {
+                if (requestPacket.getBody().equals(Commands.LISTPLAYERS)) {
+                    serverResponseDispatcher.onListPlayers(TextParser.parsePlayers(packet.getBody()));
+                } else if (requestPacket.getBody().equals(Commands.GETGAMELOG)) {
                     if (!packet.getBody().contains("Server received, But no response")) {
                         serverResponseDispatcher.onGetLog(packet.getBody());
                     }
@@ -97,27 +95,17 @@ public class SRPService implements ConnectionListener {
         this.serverResponseDispatcher = serverResponseDispatcher;
     }
 
-    private List<Player> getPlayers(String messageBody) {
-        List<Player> players = new ArrayList<>();
-        String[] playersArray = messageBody.split("\n");
+    public void sendChatMessageToAll(String message){
+        Packet packet = new Packet(connection.getSequenceNumber(),PacketType.SERVERDATA_EXECCOMMAND.getValue(),Commands.SERVERCHAT + " " + message);
+        connection.send(packet);
+    }
 
-        if (!messageBody.startsWith("No Players Connected")) {
+    public void sendChatMessageToPlayer(String steamId, String message){
 
-            for (String aPlayersArray : playersArray) {
-                if (aPlayersArray.length() > 20) { // 20 = playerId + steamId min length
+    }
 
-                    Pattern pattern = Pattern.compile("(\\d*)\\. (.+), ([0-9]+) ?");
-                    Matcher matcher = pattern.matcher(aPlayersArray);
-
-                    if (matcher.matches()) {
-                        String name = matcher.group(2);
-                        String steamId = matcher.group(3);
-                        Player player = new Player(name, steamId);
-                        players.add(player);
-                    }
-                }
-            }
-        }
-        return players;
+    public void listPlayers() {
+        Packet packet = new Packet(connection.getSequenceNumber(),PacketType.SERVERDATA_EXECCOMMAND.getValue(),Commands.LISTPLAYERS);
+        connection.send(packet);
     }
 }

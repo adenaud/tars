@@ -1,14 +1,19 @@
 package com.rcon4games.tars.service;
 
+import com.rcon4games.tars.Commands;
 import com.rcon4games.tars.dao.LogDAO;
 import com.rcon4games.tars.event.ConnectionListener;
 import com.rcon4games.tars.event.ServerConnectionListener;
 import com.rcon4games.tars.network.*;
+import com.rcon4games.tars.utils.TextParser;
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.Socket;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 @Service
 public class TarsServerService implements ServerConnectionListener {
@@ -30,8 +35,19 @@ public class TarsServerService implements ServerConnectionListener {
 
     @Override
     public void onServerRequest(Socket client, Packet requestPacket) {
-        if (requestPacket.getBody().startsWith("getgamelogdate")) {
-            //TODO get logs
+        String command = requestPacket.getBody();
+        if (command.startsWith(Commands.GETGAMELOG)) {
+            Packet responsePacket = new Packet();
+            if(command.startsWith(Commands.GETGAMELOG_DATE)){
+                Date date = TextParser.parseDate(command.replace(Commands.GETGAMELOG_DATE+" ",""));
+                //TODO call dao
+            }else{
+                responsePacket.setId(requestPacket.getId());
+                responsePacket.setType(PacketType.SERVERDATA_RESPONSE_VALUE.getValue());
+                responsePacket.setBody(Commands.GETGAMELOG + " doesn't exist anymore. Use "+Commands.GETGAMELOG_DATE+" <date(yyyy.mm.dd_hh.mm.ss)>");
+            }
+            tarsServerSocket.sendResponse(client,responsePacket);
+
         } else {
 
             srpConnection.addConnectionListener(new ConnectionListener() {

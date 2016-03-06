@@ -3,14 +3,19 @@ package com.rcon4games.tars.service;
 import com.rcon4games.tars.dao.LogDAO;
 import com.rcon4games.tars.event.ServerResponseDispatcher;
 import com.rcon4games.tars.model.Player;
+import com.rcon4games.tars.utils.TextParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
+@Scope("singleton")
 public class TarsService implements ServerResponseDispatcher {
     private Logger logger = LoggerFactory.getLogger(TarsService.class);
 
@@ -23,24 +28,34 @@ public class TarsService implements ServerResponseDispatcher {
     @Autowired
     private TarsServerService serverService;
 
-    public void init() {
-        serverService.init();
+    private List<Player> players;
 
+    public void init() {
+        players = new ArrayList<>();
+        serverService.init();
         srpService.setServerResponseDispatcher(this);
         srpService.init();
+
     }
 
     @Override
     public void onListPlayers(List<Player> players) {
-
+            this.players = players;
     }
 
     @Override
     public void onGetLog(String log) {
         String[] logLines = log.trim().split("\\n");
         for (String line : logLines) {
-            logger.debug(line);
             logDAO.writeLog(line);
+            long dateDiff = Math.abs(new Date().getTime() / 1000 - (TextParser.parseDate(line).getTime() / 1000));
+            if (dateDiff < 600 && (log.contains(" joined this ARK!") || log.contains(" left this ARK!"))) {
+                srpService.listPlayers();
+            }
         }
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }
