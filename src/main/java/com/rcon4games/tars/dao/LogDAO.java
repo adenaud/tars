@@ -1,7 +1,6 @@
 package com.rcon4games.tars.dao;
 
-import com.mongodb.Block;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.rcon4games.tars.utils.TextParser;
@@ -27,11 +26,23 @@ public class LogDAO {
     @Value("${mongodb.database}")
     private String database;
 
+    @Value("${mongodb.credential.user}")
+    private String username;
+
+    @Value("${mongodb.credential.password}")
+    private String password;
+
+    @Value("${mongodb.credential.database}")
+    private String credentialDatabase;
 
     @PostConstruct
     private void init() {
-        mongoClient = new MongoClient(hostname, port);
-        mongoDatabase = mongoClient.getDatabase(database);
+
+        MongoCredential credential = MongoCredential.createScramSha1Credential(username, credentialDatabase, password.toCharArray());
+
+        MongoClient client = new MongoClient(new ServerAddress(hostname, port), Arrays.asList(credential));
+        mongoDatabase = client.getDatabase(database);
+
     }
 
     public void writeLog(String log) {
@@ -41,7 +52,7 @@ public class LogDAO {
 
     public List<String> getLatest() {
         List<String> logs = new ArrayList<>();
-        FindIterable<Document> iterable =  mongoDatabase.getCollection("logs").find().sort(new Document("date",-1)).limit(50);
+        FindIterable<Document> iterable = mongoDatabase.getCollection("logs").find().sort(new Document("date", -1)).limit(100);
         iterable.forEach((Block<Document>) document -> logs.add((String) document.get("log")));
         return logs;
     }
