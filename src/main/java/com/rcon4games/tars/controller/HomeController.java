@@ -2,10 +2,8 @@ package com.rcon4games.tars.controller;
 
 import com.rcon4games.tars.dao.LogDAO;
 import com.rcon4games.tars.model.Log;
-import com.rcon4games.tars.service.SRPService;
+import com.rcon4games.tars.service.TarsService;
 import com.rcon4games.tars.utils.TextParser;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -24,7 +21,7 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private SRPService srpService;
+    private TarsService tarsService;
 
     @Autowired
     private LogDAO logDAO;
@@ -32,6 +29,7 @@ public class HomeController {
     @RequestMapping("/")
     public String home(Model model) {
         model.addAttribute("logs", formatLog(logDAO.getLatest()));
+        model.addAttribute("players",tarsService.getPlayers());
         return "home";
     }
 
@@ -39,7 +37,8 @@ public class HomeController {
     @RequestMapping(path = "/message", method = RequestMethod.POST)
     public String sendMessage(@RequestParam(value = "message", required = true) String message, Model model) {
         model.addAttribute("logs", formatLog(logDAO.getLatest()));
-        srpService.sendChatMessageToAll(message);
+        model.addAttribute("players",tarsService.getPlayers());
+        tarsService.sendChatMessageToAll(message);
         return "home";
     }
 

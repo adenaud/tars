@@ -1,0 +1,60 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+header{
+  height: 120px;
+  line-height: 120px;
+  background-color: #212121;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+#content{
+  margin: 16px;
+  #content-log, #content-players{
+    padding: 8px;
+    float: left;
+  }
+  #content-log{
+    width: 70%;
+  }
+  #content-players{
+    width: 30%;
+  }
+}
+
+table {
+  span.player-name{
+    font-weight: bold;
+  }
+  span.player-steamid{
+    font-style: italic;
+  }
+}
+
+.log{
+  margin-bottom: 16px;
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 25px;
+  background: #e8eaf6;
+  height: 500px;
+  overflow: scroll;
+  p{
+    margin: 0;
+  }
+  .joinleft {
+    color: #0000CD;
+  }
+  .kill {
+    color: #DC143C;
+  }
+  .tame {
+    color: #008000;
+  }
+  .server {
+    color: #e29129;
+  }
+}

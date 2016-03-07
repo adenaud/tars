@@ -58,4 +58,8 @@ public class TarsService implements ServerResponseDispatcher {
     public List<Player> getPlayers() {
         return players;
     }
+
+    public void sendChatMessageToAll(String message) {
+        srpService.sendChatMessageToAll(message);
+    }
 }

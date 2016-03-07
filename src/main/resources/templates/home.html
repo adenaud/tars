@@ -2,18 +2,34 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head th:replace="fragments/headTag :: headTag"></head>
 <body>
-<div th:include="fragments/header"></div>
+<header th:include="fragments/header"></header>
 
-<form method="post" action="/message">
-    <label for="message">Send a message :</label><br/>
-    <input class="send-message" type="text" id="message" name="message" />
-    <input type="submit" value="Send" />
-</form>
+<div id="content">
+    <div id="content-log">
+        <h2>Live log</h2>
+        <div id="log" class="log">
+            <p th:each="log : ${logs}" th:class="${log.cssClass}" th:text="${log.date} + ' : ' + ${log.log}"></p>
+        </div>
+        <div class="input-group">
+            <input id="message" type="text" class="form-control" name="message" placeholder="Type your message"/>
+      <span class="input-group-btn">
+        <button class="btn btn-default" onclick="sendMessage()" type="button">Send</button>
+      </span>
+        </div>
+    </div>
+    <div id="content-players">
+        <h2>Online players</h2>
 
-<div id="log" class="log">
-    <p th:each="log : ${logs}" th:class="${log.cssClass}" th:text="${log.date} + ' : ' + ${log.log}"></p>
+        <table  class="table table-striped">
+            <tr th:each="player : ${players}">
+                <td><span class="player-name" th:text="${player.name}"></span> - <span class="player-steamid" th:text="${player.steamId}"></span></td>
+            </tr>
+        </table>
+
+    </div>
+
+
 </div>
-
 <script>
     var objDiv = document.getElementById("log");
     objDiv.scrollTop = objDiv.scrollHeight;

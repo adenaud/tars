@@ -12,4 +12,12 @@ public class Player {
         this.name = name;
         this.steamId = steamId;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSteamId() {
+        return steamId;
+    }
 }
