@@ -42,6 +42,26 @@ public class HomeController {
         return "home";
     }
 
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public String search(@RequestParam(value = "search-type", required = true) String type,
+                         @RequestParam(value = "query", required = true) String query, Model model) {
+        String regex = ".*"+query+".*";
+        switch (type) {
+            case "startswith":
+                regex = "[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}_[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}: " + query + ".*";
+                break;
+            case "endswith":
+                regex = ".*" + query + "$";
+                break;
+            case "regex":
+                regex = query;
+                break;
+        }
+        model.addAttribute("logs", formatLog(logDAO.search(regex)));
+        model.addAttribute("players",tarsService.getPlayers());
+        return "home";
+    }
+
     private List<Log> formatLog(List<String> logsStrings) {
         List<Log> logs = new ArrayList<>();
 

@@ -6,23 +6,48 @@
 
 <div id="content">
     <div id="content-log">
+
         <h2>Live log</h2>
+
+        <h4>Filters</h4>
+
+        <form id="search-from" method="get" action="search">
+            <div class="input-group">
+                <input type="text" class="form-control" name="query" placeholder="Search for..."/>
+                <div class="input-group-btn">
+                    <select title="Type" name="search-type" class="selectpicker">
+                        <option value="contains" selected="selected">Contains</option>
+                        <option value="startswith">Starts with</option>
+                        <option value="endswith">Ends with</option>
+                        <option value="regex">RegEx</option>
+                    </select>
+                    <button type="submit" class="btn btn btn-primary" onclick="search('contains')">Search</button>
+                </div>
+
+            </div>
+        </form>
+
         <div id="log" class="log">
             <p th:each="log : ${logs}" th:class="${log.cssClass}" th:text="${log.date} + ' : ' + ${log.log}"></p>
         </div>
+
+        <h4>Send a message</h4>
+
         <div class="input-group">
             <input id="message" type="text" class="form-control" name="message" placeholder="Type your message"/>
-      <span class="input-group-btn">
-        <button class="btn btn-default" onclick="sendMessage()" type="button">Send</button>
-      </span>
+          <span class="input-group-btn">
+            <button class="btn btn-default" onclick="sendMessage()" type="button">Send</button>
+          </span>
         </div>
     </div>
     <div id="content-players">
         <h2>Online players</h2>
 
-        <table  class="table table-striped">
+        <table class="table table-striped">
             <tr th:each="player : ${players}">
-                <td><span class="player-name" th:text="${player.name}"></span> - <span class="player-steamid" th:text="${player.steamId}"></span></td>
+                <td><span class="player-name" th:text="${player.name}"></span> - <span class="player-steamid"
+                                                                                       th:text="${player.steamId}"></span>
+                </td>
             </tr>
         </table>
 

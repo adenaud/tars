@@ -29,6 +29,7 @@ public class SRPService implements ConnectionListener {
     private SRPConnection connection;
 
     private ServerResponseDispatcher serverResponseDispatcher;
+    private Timer logTimer;
 
     public void init() {
         logger.info("T.A.R.S : Hi Cooper !");
@@ -44,7 +45,7 @@ public class SRPService implements ConnectionListener {
 
     public void onLogin() {
         listPlayers();
-        Timer logTimer = new Timer();
+        logTimer = new Timer();
         logTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -56,6 +57,9 @@ public class SRPService implements ConnectionListener {
 
     @Override
     public void onDisconnect(String message) {
+        if(logTimer != null){
+            logTimer.cancel();
+        }
         logger.error("Disconnected : {}", message);
     }
 
