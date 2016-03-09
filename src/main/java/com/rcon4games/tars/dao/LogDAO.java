@@ -14,38 +14,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Repository
-public class LogDAO {
-
-    private MongoClient mongoClient;
-    private MongoDatabase mongoDatabase;
-
-    @Value("${mongodb.host}")
-    private String hostname;
-
-    @Value("${mongodb.port}")
-    private int port;
-
-    @Value("${mongodb.database}")
-    private String database;
-
-    @Value("${mongodb.credential.user}")
-    private String username;
-
-    @Value("${mongodb.credential.password}")
-    private String password;
-
-    @Value("${mongodb.credential.database}")
-    private String credentialDatabase;
-
-    @PostConstruct
-    private void init() {
-
-        MongoCredential credential = MongoCredential.createScramSha1Credential(username, credentialDatabase, password.toCharArray());
-
-        MongoClient client = new MongoClient(new ServerAddress(hostname, port), Arrays.asList(credential));
-        mongoDatabase = client.getDatabase(database);
-
-    }
+public class LogDAO extends AbstractDao{
 
     public void writeLog(String log) {
         Document doc = new Document().append("date", TextParser.parseLogDate(log)).append("log", log);

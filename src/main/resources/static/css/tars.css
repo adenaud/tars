@@ -7,7 +7,13 @@ header {
   height: 120px;
   line-height: 120px;
   background-color: #212121;
-  color: rgba(255, 255, 255, 0.92); }
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 3px #212121; }
+  header .site-title {
+    margin-left: 32px;
+    font-size: xx-large;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 120px; }
 
 #content {
   margin: 16px; }

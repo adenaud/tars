@@ -156,6 +156,11 @@ public class SRPConnection implements TarsSocket {
                 receive();
             } catch (IOException e) {
                 logger.error("Unable to receive packet : {}", e.getMessage());
+                receiveThread.interrupt();
+                for (ConnectionListener connectionListener : connectionListeners) {
+                    connectionListener.onDisconnect(e.getMessage());
+                }
+                reconnect("Error, reconnecting");
             }
         }
     }
