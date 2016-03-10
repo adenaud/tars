@@ -1,5 +1,7 @@
 package com.rcon4games.tars.dao;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +21,7 @@ public class UserDao extends AbstractDao {
         String uuid = UUID.randomUUID().toString();
         Document document = new Document();
         document.append("username",username);
-        //document.append("password",);
+        document.append("password", DigestUtils.md5Hex(password));
         return uuid;
     }
 
