@@ -11,6 +11,11 @@ public class Log {
     public Log() {
     }
 
+    public Log(Date date, String log) {
+        this.date = date;
+        this.log = log;
+    }
+
     public Log(Date date, String cssClass, String log) {
         this.date = date;
         this.cssClass = cssClass;

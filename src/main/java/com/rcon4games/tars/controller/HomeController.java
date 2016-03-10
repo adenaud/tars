@@ -62,31 +62,22 @@ public class HomeController {
         return "home";
     }
 
-    private List<Log> formatLog(List<String> logsStrings) {
-        List<Log> logs = new ArrayList<>();
-
-        for (String logString : logsStrings) {
-            Log log = new Log();
-
+    private List<Log> formatLog(List<Log> logs) {
+        for (Log log : logs) {
             //TODO Replace this crap by regex
-            if(logString.contains("joined this ARK!") || logString.contains("left this ARK!")){
+            if(log.getLog().contains("joined this ARK!") || log.getLog().contains("left this ARK!")){
                 log.setCssClass("joinleft");
             }
-            else if(logString.contains("was killed by") || logString.contains("was killed!")){
+            else if(log.getLog().contains("was killed by") || log.getLog().contains("was killed!")){
                 log.setCssClass("kill");
             }
-            else if(logString.contains("Tamed a ")){
+            else if(log.getLog().contains("Tamed a ")){
                 log.setCssClass("tame");
             }
-            else if(logString.contains("SERVER:")){
+            else if(log.getLog().contains("SERVER:")){
                 log.setCssClass("server");
             }
-            log.setDate(TextParser.parseLogDate(logString));
-            log.setLog(TextParser.pareLogContent(logString));
-
-            logs.add(log);
         }
-        Collections.reverse(logs);
         return logs;
     }
 
