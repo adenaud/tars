@@ -20,8 +20,11 @@ public class UserDao extends AbstractDao {
     public String create(String username, String password, String email) {
         String uuid = UUID.randomUUID().toString();
         Document document = new Document();
+        document.append("uuid","uuid");
         document.append("username",username);
         document.append("password", DigestUtils.md5Hex(password));
+        document.append("email","email");
+        mongoDatabase.getCollection("users").insertOne(document);
         return uuid;
     }
 

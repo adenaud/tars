@@ -77,6 +77,8 @@ public class HomeController {
             else if(log.getLog().contains("SERVER:")){
                 log.setCssClass("server");
             }
+
+            log.setLog(TextParser.pareLogContent(log.getLog()));
         }
         return logs;
     }
