@@ -93,7 +93,7 @@ public class SRPConnection implements TarsSocket {
             InputStream inputStream;
             try {
 
-                if (new Date().getTime() - lastPacketTime.getTime() > 3000) {
+                if (new Date().getTime() - lastPacketTime.getTime() > 5000) {
                     reconnect("The server has stopped to responding to RCON requests.");
                 }
                 inputStream = socket.getInputStream();
